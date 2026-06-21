@@ -68,11 +68,14 @@ def auto_register() -> None:
         "flashrag.retrieval.bm25",
         "flashrag.retrieval.hybrid",
         "flashrag.retrieval.reranker",
+        "flashrag.retrieval.colbert",
+        "flashrag.retrieval.hyde",
         "flashrag.generation.generator",
         "flashrag.pipelines.basic_rag",
         "flashrag.pipelines.agentic_rag",
         "flashrag.pipelines.multimodal_rag",
         "flashrag.pipelines.corrective_rag",
+        "flashrag.pipelines.graph_rag",
     ]
     for mod in _modules:
         try:
