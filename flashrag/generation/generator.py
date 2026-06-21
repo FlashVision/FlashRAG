@@ -102,9 +102,7 @@ class RAGGenerator:
                 model_name, torch_dtype=torch.float32, **load_kwargs
             ).to(device)
         else:
-            self._model = AutoModelForCausalLM.from_pretrained(
-                model_name, **load_kwargs
-            )
+            self._model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
 
         self._model.eval()
         logger.info(f"Generator ready: {model_name} (device={device})")

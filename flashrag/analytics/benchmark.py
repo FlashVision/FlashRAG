@@ -134,9 +134,7 @@ class Benchmark:
                     em_scores.append(compute_exact_match(result.answer, gt_ans))
 
                 if result.contexts:
-                    faith_scores.append(
-                        compute_faithfulness(result.answer, result.contexts)
-                    )
+                    faith_scores.append(compute_faithfulness(result.answer, result.contexts))
                 rel_scores.append(compute_relevance(result.answer, question))
 
             if f1_scores:

@@ -106,9 +106,7 @@ class ResearchAssistant:
         }
 
         if extract_citations and result.contexts:
-            citation_report = self._citation_extractor.extract(
-                result.answer, result.contexts
-            )
+            citation_report = self._citation_extractor.extract(result.answer, result.contexts)
             response["citations"] = {
                 "cited_sources": citation_report.cited_sources,
                 "uncited_sources": citation_report.uncited_sources,

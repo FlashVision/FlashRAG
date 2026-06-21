@@ -64,9 +64,7 @@ class DataConfig:
 
 @dataclass
 class AnalyticsConfig:
-    metrics: list[str] = field(
-        default_factory=lambda: ["recall@5", "mrr", "ndcg@10"]
-    )
+    metrics: list[str] = field(default_factory=lambda: ["recall@5", "mrr", "ndcg@10"])
     output_dir: str = "workspace/eval"
 
 

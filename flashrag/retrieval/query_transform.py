@@ -21,11 +21,29 @@ _CONJUNCTIONS = re.compile(
     r"\b(?:and also|and then|and|as well as|in addition to)\b",
     re.IGNORECASE,
 )
-_QUESTION_WORDS = frozenset({
-    "who", "what", "when", "where", "why", "how", "which",
-    "is", "are", "was", "were", "do", "does", "did", "can", "could",
-    "will", "would", "should",
-})
+_QUESTION_WORDS = frozenset(
+    {
+        "who",
+        "what",
+        "when",
+        "where",
+        "why",
+        "how",
+        "which",
+        "is",
+        "are",
+        "was",
+        "were",
+        "do",
+        "does",
+        "did",
+        "can",
+        "could",
+        "will",
+        "would",
+        "should",
+    }
+)
 
 _SYNONYM_MAP: dict[str, list[str]] = {
     "best": ["top", "optimal", "most effective"],
@@ -64,10 +82,7 @@ class QueryDecomposer:
 
     def __init__(self, method: str = "rule_based") -> None:
         if method not in ("rule_based",):
-            raise ValueError(
-                f"Unknown decomposition method '{method}'. "
-                f"Supported: 'rule_based'"
-            )
+            raise ValueError(f"Unknown decomposition method '{method}'. Supported: 'rule_based'")
         self.method = method
 
     def decompose(self, query: str) -> list[str]:
@@ -116,7 +131,8 @@ class QueryDecomposer:
             sub_queries = [query]
 
         logger.debug(
-            "Decomposed query into %d sub-queries", len(sub_queries),
+            "Decomposed query into %d sub-queries",
+            len(sub_queries),
         )
         return sub_queries
 
@@ -267,9 +283,11 @@ class MultiQueryGenerator:
                 seen.add(normalised)
                 unique.append(v)
 
-        result = unique[:self.num_queries]
+        result = unique[: self.num_queries]
         logger.debug(
-            "Generated %d query variants for: '%s'", len(result), query,
+            "Generated %d query variants for: '%s'",
+            len(result),
+            query,
         )
         return result
 
@@ -284,7 +302,7 @@ class MultiQueryGenerator:
                 replacement = synonyms[0]
                 if word[0].isupper():
                     replacement = replacement.capitalize()
-                trailing = word[len(key):]
+                trailing = word[len(key) :]
                 words[i] = replacement + trailing
                 return " ".join(words)
         return query
@@ -333,11 +351,47 @@ class MultiQueryGenerator:
     def _keyword_focus(query: str) -> str:
         """Extract and foreground the most content-rich keywords."""
         stop = {
-            "a", "an", "the", "is", "it", "of", "in", "to", "and", "or",
-            "for", "on", "with", "as", "at", "by", "from", "that", "this",
-            "what", "how", "why", "when", "where", "who", "which",
-            "do", "does", "did", "can", "could", "would", "should",
-            "are", "was", "were", "be", "been", "have", "has", "had",
+            "a",
+            "an",
+            "the",
+            "is",
+            "it",
+            "of",
+            "in",
+            "to",
+            "and",
+            "or",
+            "for",
+            "on",
+            "with",
+            "as",
+            "at",
+            "by",
+            "from",
+            "that",
+            "this",
+            "what",
+            "how",
+            "why",
+            "when",
+            "where",
+            "who",
+            "which",
+            "do",
+            "does",
+            "did",
+            "can",
+            "could",
+            "would",
+            "should",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "have",
+            "has",
+            "had",
         }
         words = re.findall(r"\w+", query.lower())
         keywords = [w for w in words if w not in stop and len(w) > 2]
@@ -362,21 +416,41 @@ class QueryRouter:
     """
 
     _TYPE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
-        ("factual", re.compile(
-            r"^(who|what|when|where)\b.*\??\s*$", re.I,
-        )),
-        ("procedural", re.compile(
-            r"^how\b.*\??\s*$", re.I,
-        )),
-        ("conceptual", re.compile(
-            r"\b(explain|describe|what is|define|concept)\b", re.I,
-        )),
-        ("comparative", re.compile(
-            r"\b(compare|difference|versus|vs\.?|better|worse)\b", re.I,
-        )),
-        ("causal", re.compile(
-            r"^why\b.*\??\s*$", re.I,
-        )),
+        (
+            "factual",
+            re.compile(
+                r"^(who|what|when|where)\b.*\??\s*$",
+                re.I,
+            ),
+        ),
+        (
+            "procedural",
+            re.compile(
+                r"^how\b.*\??\s*$",
+                re.I,
+            ),
+        ),
+        (
+            "conceptual",
+            re.compile(
+                r"\b(explain|describe|what is|define|concept)\b",
+                re.I,
+            ),
+        ),
+        (
+            "comparative",
+            re.compile(
+                r"\b(compare|difference|versus|vs\.?|better|worse)\b",
+                re.I,
+            ),
+        ),
+        (
+            "causal",
+            re.compile(
+                r"^why\b.*\??\s*$",
+                re.I,
+            ),
+        ),
     ]
 
     def __init__(self, retrievers: dict[str, Any]) -> None:
@@ -405,8 +479,7 @@ class QueryRouter:
         for qtype, rname in type_mapping.items():
             if rname not in self.retrievers:
                 raise ValueError(
-                    f"Retriever '{rname}' not found. "
-                    f"Available: {list(self.retrievers.keys())}"
+                    f"Retriever '{rname}' not found. Available: {list(self.retrievers.keys())}"
                 )
             self._type_to_retriever[qtype] = rname
 
@@ -432,11 +505,13 @@ class QueryRouter:
         query_type = self._classify_query(query)
 
         retriever_name = self._type_to_retriever.get(
-            query_type, self._default_retriever,
+            query_type,
+            self._default_retriever,
         )
         logger.debug(
             "Routed query (type=%s) → retriever '%s'",
-            query_type, retriever_name,
+            query_type,
+            retriever_name,
         )
         return retriever_name
 
@@ -460,7 +535,8 @@ class QueryRouter:
         retriever = self.retrievers[retriever_name]
         logger.info(
             "QueryRouter: searching with '%s' (top_k=%d)",
-            retriever_name, top_k,
+            retriever_name,
+            top_k,
         )
         return retriever.search(query, top_k=top_k)
 

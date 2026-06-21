@@ -143,9 +143,7 @@ def _query_cmd(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     store = VectorStore.load(args.index)
-    embedder = SentenceTransformerEmbedding(
-        model_name=args.embedding, device=args.device
-    )
+    embedder = SentenceTransformerEmbedding(model_name=args.embedding, device=args.device)
 
     query_vec = embedder.encode([args.question])[0]
     results = store.search(query_vec, top_k=args.top_k)
@@ -163,9 +161,7 @@ def _chat_cmd(args: argparse.Namespace) -> None:
     if args.index and Path(args.index).exists():
         store = VectorStore.load(args.index)
 
-    embedder = SentenceTransformerEmbedding(
-        model_name=args.embedding, device=args.device
-    )
+    embedder = SentenceTransformerEmbedding(model_name=args.embedding, device=args.device)
     generator = RAGGenerator(model_name=args.model, device=args.device)
 
     print("FlashRAG Chat (type 'quit' to exit)")

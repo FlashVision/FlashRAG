@@ -183,9 +183,11 @@ class VectorStore:
             if 0 <= vid < self.size:
                 keep_mask[vid] = False
 
-        all_vectors = self._faiss.rev_swig_ptr(
-            self._index.get_xb(), self.size * self.dimension
-        ).reshape(self.size, self.dimension).copy()
+        all_vectors = (
+            self._faiss.rev_swig_ptr(self._index.get_xb(), self.size * self.dimension)
+            .reshape(self.size, self.dimension)
+            .copy()
+        )
 
         kept_vectors = all_vectors[keep_mask]
         kept_docs = [d for d, m in zip(self._documents, keep_mask) if m]

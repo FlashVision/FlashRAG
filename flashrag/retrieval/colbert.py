@@ -70,7 +70,9 @@ class ColBERTRetriever:
 
         logger.info(
             "ColBERTRetriever created (model=%s, dim=%d, device=%s)",
-            model_name, dimension, device,
+            model_name,
+            dimension,
+            device,
         )
 
     def _load_model(self) -> None:
@@ -139,7 +141,7 @@ class ColBERTRetriever:
         token_embeds = token_embeds[attention_mask.astype(bool)]
 
         if token_embeds.shape[1] != self.dimension:
-            token_embeds = token_embeds[:, :self.dimension]
+            token_embeds = token_embeds[:, : self.dimension]
 
         norms = np.linalg.norm(token_embeds, axis=1, keepdims=True)
         token_embeds = token_embeds / np.maximum(norms, 1e-12)
@@ -160,9 +162,7 @@ class ColBERTRetriever:
         embeddings = np.zeros((len(tokens), self.dimension), dtype=np.float32)
         for i, token in enumerate(tokens):
             digest = hashlib.sha256(token.encode()).digest()
-            rng = np.random.RandomState(
-                int.from_bytes(digest[:4], "big")
-            )
+            rng = np.random.RandomState(int.from_bytes(digest[:4], "big"))
             vec = rng.randn(self.dimension).astype(np.float32)
             norm = np.linalg.norm(vec)
             embeddings[i] = vec / max(norm, 1e-12)
@@ -233,7 +233,10 @@ class ColBERTRetriever:
                 emb = self._encode_document(doc)
                 self._doc_embeddings.append(emb)
             logger.debug(
-                "Indexed documents %d–%d / %d", start, end - 1, n,
+                "Indexed documents %d–%d / %d",
+                start,
+                end - 1,
+                n,
             )
 
         logger.info("ColBERT index built: %d documents", self.size)
@@ -262,7 +265,7 @@ class ColBERTRetriever:
             The MaxSim score (higher is better).
         """
         sim_matrix = query_embeddings @ doc_embeddings.T  # (Q, T)
-        max_per_query_token = sim_matrix.max(axis=1)      # (Q,)
+        max_per_query_token = sim_matrix.max(axis=1)  # (Q,)
         return float(max_per_query_token.sum())
 
     def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
@@ -287,10 +290,7 @@ class ColBERTRetriever:
         query_emb = self._encode_query(query)
 
         scores = np.array(
-            [
-                self._maxsim_score(query_emb, doc_emb)
-                for doc_emb in self._doc_embeddings
-            ],
+            [self._maxsim_score(query_emb, doc_emb) for doc_emb in self._doc_embeddings],
             dtype=np.float32,
         )
 

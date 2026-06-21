@@ -61,9 +61,7 @@ class VisionEmbedding(BaseEmbedding):
             out = self._model.get_text_features(**dummy)
             self._dimension = out.shape[-1]
 
-        logger.info(
-            f"Loaded CLIP model '{model_name}' (dim={self._dimension}, device={device})"
-        )
+        logger.info(f"Loaded CLIP model '{model_name}' (dim={self._dimension}, device={device})")
 
     @property
     def dimension(self) -> int:
@@ -79,10 +77,8 @@ class VisionEmbedding(BaseEmbedding):
         """Encode text strings using the CLIP text encoder."""
         all_vecs: list[np.ndarray] = []
         for i in range(0, len(texts), batch_size):
-            batch = texts[i: i + batch_size]
-            inputs = self._processor(
-                text=batch, return_tensors="pt", padding=True, truncation=True
-            )
+            batch = texts[i : i + batch_size]
+            inputs = self._processor(text=batch, return_tensors="pt", padding=True, truncation=True)
             inputs = {k: v.to(self.device) for k, v in inputs.items() if k != "pixel_values"}
             with torch.no_grad():
                 vecs = self._model.get_text_features(**inputs)
@@ -114,7 +110,7 @@ class VisionEmbedding(BaseEmbedding):
 
         all_vecs: list[np.ndarray] = []
         for i in range(0, len(loaded), batch_size):
-            batch = loaded[i: i + batch_size]
+            batch = loaded[i : i + batch_size]
             inputs = self._processor(images=batch, return_tensors="pt")
             inputs = {k: v.to(self.device) for k, v in inputs.items() if k != "input_ids"}
             with torch.no_grad():

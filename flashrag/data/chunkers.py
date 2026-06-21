@@ -63,7 +63,7 @@ class RecursiveChunker:
         remaining_seps = separators[1:] if len(separators) > 1 else [""]
 
         if not sep:
-            return [text[i: i + self.chunk_size] for i in range(0, len(text), self.chunk_size)]
+            return [text[i : i + self.chunk_size] for i in range(0, len(text), self.chunk_size)]
 
         parts = text.split(sep)
         result: list[str] = []
@@ -94,7 +94,7 @@ class RecursiveChunker:
         result: list[str] = [chunks[0]]
         for i in range(1, len(chunks)):
             prev = chunks[i - 1]
-            overlap_text = prev[-self.chunk_overlap:] if len(prev) > self.chunk_overlap else prev
+            overlap_text = prev[-self.chunk_overlap :] if len(prev) > self.chunk_overlap else prev
             merged = overlap_text + chunks[i]
             result.append(merged)
         return result
@@ -137,7 +137,7 @@ class SentenceChunker:
                         chunk_index=len(chunks),
                     )
                 )
-                overlap = current_sentences[-self.sentence_overlap:]
+                overlap = current_sentences[-self.sentence_overlap :]
                 current_sentences = list(overlap)
                 current_len = sum(len(s) for s in current_sentences) + len(current_sentences) - 1
             current_sentences.append(sent)
@@ -168,7 +168,7 @@ class FixedChunker:
         step = max(self.chunk_size - self.chunk_overlap, 1)
         chunks: list[Chunk] = []
         for i in range(0, len(text), step):
-            segment = text[i: i + self.chunk_size]
+            segment = text[i : i + self.chunk_size]
             if segment.strip():
                 chunks.append(
                     Chunk(

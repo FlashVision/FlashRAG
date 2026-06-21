@@ -29,13 +29,56 @@ def _tokenize(text: str, stop_words: set[str] | None = None) -> list[str]:
     return tokens
 
 
-_DEFAULT_STOP_WORDS = frozenset({
-    "a", "an", "the", "is", "it", "of", "in", "to", "and", "or", "for",
-    "on", "with", "as", "at", "by", "from", "that", "this", "are", "was",
-    "were", "be", "been", "being", "have", "has", "had", "do", "does",
-    "did", "will", "would", "could", "should", "may", "might", "can",
-    "not", "but", "if", "then", "than", "so", "no", "nor",
-})
+_DEFAULT_STOP_WORDS = frozenset(
+    {
+        "a",
+        "an",
+        "the",
+        "is",
+        "it",
+        "of",
+        "in",
+        "to",
+        "and",
+        "or",
+        "for",
+        "on",
+        "with",
+        "as",
+        "at",
+        "by",
+        "from",
+        "that",
+        "this",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "have",
+        "has",
+        "had",
+        "do",
+        "does",
+        "did",
+        "will",
+        "would",
+        "could",
+        "should",
+        "may",
+        "might",
+        "can",
+        "not",
+        "but",
+        "if",
+        "then",
+        "than",
+        "so",
+        "no",
+        "nor",
+    }
+)
 
 
 @RETRIEVERS.register("bm25")

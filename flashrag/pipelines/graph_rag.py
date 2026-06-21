@@ -200,7 +200,7 @@ class GraphRAGPipeline:
                         subj, obj = obj, subj
                         subj_pos, obj_pos = obj_pos, subj_pos
 
-                    between = sent[subj_pos + len(subj): obj_pos].strip()
+                    between = sent[subj_pos + len(subj) : obj_pos].strip()
                     verb_match = verb_pattern.search(between)
 
                     if verb_match:
@@ -485,13 +485,12 @@ class GraphRAGPipeline:
         return RAGResult(
             answer=gen_result.answer if hasattr(gen_result, "answer") else str(gen_result),
             contexts=combined_passages,
-            sources=[{"graph_retrieved": i < len(graph_passages)}
-                     for i in range(len(combined_passages))],
+            sources=[
+                {"graph_retrieved": i < len(graph_passages)} for i in range(len(combined_passages))
+            ],
             scores=combined_scores,
             metadata={
-                "graph_entities_found": len(
-                    self._extract_entities(question)
-                ),
+                "graph_entities_found": len(self._extract_entities(question)),
                 "graph_passages": len(graph_passages),
                 "vector_passages": len(vector_passages),
             },
@@ -529,9 +528,7 @@ class GraphRAGPipeline:
             lines.append(f"  —[{display_rel}]→ {', '.join(targets)}")
 
         if key in self._entity_chunks:
-            lines.append(
-                f"  Appears in {len(self._entity_chunks[key])} chunk(s)"
-            )
+            lines.append(f"  Appears in {len(self._entity_chunks[key])} chunk(s)")
 
         return "\n".join(lines)
 
@@ -545,9 +542,7 @@ class GraphRAGPipeline:
             Dictionary with entity count, edge count, and chunk count.
         """
         total_edges = sum(
-            len(targets)
-            for rels in self._graph.values()
-            for targets in rels.values()
+            len(targets) for rels in self._graph.values() for targets in rels.values()
         )
         unique_relations: set[str] = set()
         for rels in self._graph.values():

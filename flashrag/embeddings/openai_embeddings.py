@@ -57,9 +57,7 @@ class OpenAIEmbedding(BaseEmbedding):
         self._dimension = _MODEL_DIMENSIONS.get(model_name, 1536)
         key = api_key or os.environ.get("OPENAI_API_KEY")
         if not key:
-            raise ValueError(
-                "OpenAI API key required. Set OPENAI_API_KEY env var or pass api_key="
-            )
+            raise ValueError("OpenAI API key required. Set OPENAI_API_KEY env var or pass api_key=")
         self._client = openai.OpenAI(api_key=key, max_retries=max_retries)
         logger.info(f"Initialized OpenAI embedding model '{model_name}' (dim={self._dimension})")
 
@@ -77,7 +75,7 @@ class OpenAIEmbedding(BaseEmbedding):
         all_embeddings: list[list[float]] = []
 
         for i in range(0, len(texts), batch_size):
-            batch = texts[i: i + batch_size]
+            batch = texts[i : i + batch_size]
             batch = [t.replace("\n", " ") for t in batch]
             response = self._client.embeddings.create(input=batch, model=self.model_name)
             batch_vecs = [item.embedding for item in response.data]

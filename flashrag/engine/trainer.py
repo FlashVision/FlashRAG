@@ -161,9 +161,7 @@ class RAGTrainer:
         optimizer = torch.optim.AdamW(model.parameters(), lr=self.learning_rate)
         model.train()
 
-        self.callback_manager.on_train_start(
-            {"model": model_name, "examples": len(train_data)}
-        )
+        self.callback_manager.on_train_start({"model": model_name, "examples": len(train_data)})
 
         total_loss = 0.0
         steps = 0
@@ -179,8 +177,7 @@ class RAGTrainer:
                     f"Answer: {item['answer']}"
                 )
                 inputs = tokenizer(
-                    text, return_tensors="pt", truncation=True,
-                    max_length=512, padding="max_length"
+                    text, return_tensors="pt", truncation=True, max_length=512, padding="max_length"
                 ).to(self.device)
 
                 outputs = model(**inputs, labels=inputs["input_ids"])
@@ -201,9 +198,7 @@ class RAGTrainer:
 
             avg_loss = epoch_loss / len(train_data)
             total_loss += avg_loss
-            self.callback_manager.on_epoch_end(
-                {"epoch": epoch + 1, "avg_loss": avg_loss}
-            )
+            self.callback_manager.on_epoch_end({"epoch": epoch + 1, "avg_loss": avg_loss})
             logger.info(f"Epoch {epoch + 1}: avg_loss={avg_loss:.4f}")
 
         save_path = self.output_dir / "generator_finetuned"

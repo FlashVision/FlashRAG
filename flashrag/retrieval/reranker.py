@@ -103,7 +103,7 @@ class CrossEncoderReranker:
         all_scores: list[float] = []
 
         for i in range(0, len(pairs), batch_size):
-            batch = pairs[i: i + batch_size]
+            batch = pairs[i : i + batch_size]
             queries, docs = zip(*batch)
 
             inputs = self._tokenizer(

@@ -61,9 +61,7 @@ class EarlyStoppingCallback(TrainingCallback):
             self._counter += 1
             if self._counter >= self.patience:
                 self.should_stop = True
-                logger.info(
-                    f"Early stopping triggered: no improvement for {self.patience} epochs"
-                )
+                logger.info(f"Early stopping triggered: no improvement for {self.patience} epochs")
 
 
 class CallbackManager:

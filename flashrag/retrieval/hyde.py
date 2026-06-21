@@ -20,7 +20,7 @@ from flashrag.retrieval.vector_store import SearchResult, VectorStore
 logger = logging.getLogger(__name__)
 
 _FALLBACK_TEMPLATE = (
-    "A possible answer to the question \"{query}\" would discuss the "
+    'A possible answer to the question "{query}" would discuss the '
     "following relevant information and key concepts related to the topic."
 )
 
@@ -71,14 +71,17 @@ class HyDERetriever:
 
         self._embedding_model = embedding_model
         self._base_retriever = base_retriever or VectorStore(
-            dimension=dimension, metric="cosine",
+            dimension=dimension,
+            metric="cosine",
         )
         self._llm_available: bool | None = None
         self._llm: Any = None
 
         logger.info(
             "HyDERetriever created (generator=%s, n_hypo=%d, dim=%d)",
-            generator_model, num_hypothetical, dimension,
+            generator_model,
+            num_hypothetical,
+            dimension,
         )
 
     def _ensure_embedding_model(self) -> None:
@@ -103,14 +106,13 @@ class HyDERetriever:
 
         try:
             import openai  # noqa: F811
+
             self._llm = openai.OpenAI()
             self._llm_available = True
             logger.info("HyDE LLM client initialised (%s)", self.generator_model)
         except Exception:
             self._llm_available = False
-            logger.info(
-                "No LLM available – HyDE will use template-based expansion"
-            )
+            logger.info("No LLM available – HyDE will use template-based expansion")
         return self._llm_available
 
     def _generate_hypothetical(self, query: str) -> list[str]:
@@ -151,9 +153,7 @@ class HyDERetriever:
                 if text:
                     hypotheticals.append(text)
             except Exception:
-                logger.warning(
-                    "LLM call failed, falling back to template expansion"
-                )
+                logger.warning("LLM call failed, falling back to template expansion")
                 hypotheticals.append(
                     _FALLBACK_TEMPLATE.format(query=query),
                 )
@@ -164,20 +164,17 @@ class HyDERetriever:
         templates = [
             _FALLBACK_TEMPLATE,
             (
-                "The answer to \"{query}\" involves understanding the "
+                'The answer to "{query}" involves understanding the '
                 "underlying principles, definitions, and relationships "
                 "between the key entities mentioned in the question."
             ),
             (
-                "To address \"{query}\", one should consider the relevant "
+                'To address "{query}", one should consider the relevant '
                 "facts, prior research, and established knowledge in "
                 "this domain."
             ),
         ]
-        return [
-            t.format(query=query)
-            for t in templates[:self.num_hypothetical]
-        ]
+        return [t.format(query=query) for t in templates[: self.num_hypothetical]]
 
     @property
     def size(self) -> int:
@@ -233,7 +230,8 @@ class HyDERetriever:
 
         hypotheticals = self._generate_hypothetical(query)
         logger.debug(
-            "Generated %d hypothetical doc(s) for query", len(hypotheticals),
+            "Generated %d hypothetical doc(s) for query",
+            len(hypotheticals),
         )
 
         hypo_vectors = self._embedding_model.encode(hypotheticals)

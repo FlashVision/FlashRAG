@@ -90,9 +90,7 @@ class BasicRAGPipeline:
             device=device,
             prompt_template=prompt_template,
         )
-        self._preprocessor = Preprocessor(
-            chunk_size=chunk_size, chunk_overlap=chunk_overlap
-        )
+        self._preprocessor = Preprocessor(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         self._citation_extractor = CitationExtractor()
 
         self.top_k = top_k

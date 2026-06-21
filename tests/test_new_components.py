@@ -52,6 +52,7 @@ class _DummyEmbedding:
 
     def encode(self, texts, **kwargs):
         import hashlib
+
         result = np.zeros((len(texts), self.dimension), dtype=np.float32)
         for i, text in enumerate(texts):
             seed = int(hashlib.md5(text.encode()).hexdigest()[:8], 16)
@@ -83,6 +84,7 @@ class _DummyRetriever:
 
     def search(self, query_vector, top_k=5):
         from flashrag.retrieval.vector_store import SearchResult
+
         if self.size == 0:
             return []
         q = query_vector.reshape(1, -1)

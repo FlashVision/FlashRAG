@@ -124,9 +124,7 @@ class AgenticRAGPipeline:
 
         return unique
 
-    def assess_relevance(
-        self, query: str, results: list[SearchResult]
-    ) -> list[SearchResult]:
+    def assess_relevance(self, query: str, results: list[SearchResult]) -> list[SearchResult]:
         """Filter results below the relevance threshold."""
         return [r for r in results if r.score >= self.relevance_threshold]
 
@@ -182,7 +180,7 @@ class AgenticRAGPipeline:
 
         gen_result = self._generator.generate(
             question=question,
-            search_results=all_results[:self.top_k * 2],
+            search_results=all_results[: self.top_k * 2],
             **gen_kwargs,
         )
 

@@ -16,15 +16,76 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-_STOP_WORDS = frozenset({
-    "a", "an", "the", "is", "it", "of", "in", "to", "and", "or", "for",
-    "on", "with", "as", "at", "by", "what", "how", "why", "when", "where",
-    "who", "which", "do", "does", "did", "was", "were", "be", "been",
-    "being", "have", "has", "had", "that", "this", "these", "those", "are",
-    "but", "if", "not", "no", "so", "than", "too", "very", "can", "will",
-    "just", "should", "now", "its", "from", "also", "more", "some", "any",
-    "?", ".", ",", "!", ";", ":", "'", '"',
-})
+_STOP_WORDS = frozenset(
+    {
+        "a",
+        "an",
+        "the",
+        "is",
+        "it",
+        "of",
+        "in",
+        "to",
+        "and",
+        "or",
+        "for",
+        "on",
+        "with",
+        "as",
+        "at",
+        "by",
+        "what",
+        "how",
+        "why",
+        "when",
+        "where",
+        "who",
+        "which",
+        "do",
+        "does",
+        "did",
+        "was",
+        "were",
+        "be",
+        "been",
+        "being",
+        "have",
+        "has",
+        "had",
+        "that",
+        "this",
+        "these",
+        "those",
+        "are",
+        "but",
+        "if",
+        "not",
+        "no",
+        "so",
+        "than",
+        "too",
+        "very",
+        "can",
+        "will",
+        "just",
+        "should",
+        "now",
+        "its",
+        "from",
+        "also",
+        "more",
+        "some",
+        "any",
+        "?",
+        ".",
+        ",",
+        "!",
+        ";",
+        ":",
+        "'",
+        '"',
+    }
+)
 
 
 def _default_tokenize(text: str) -> list[str]:
@@ -298,8 +359,7 @@ class RAGASEvaluator:
             for m in metrics:
                 if m not in self._METRIC_REGISTRY:
                     raise ValueError(
-                        f"Unknown metric '{m}'. "
-                        f"Available: {list(self._METRIC_REGISTRY.keys())}"
+                        f"Unknown metric '{m}'. Available: {list(self._METRIC_REGISTRY.keys())}"
                     )
             self._metrics = list(metrics)
 
@@ -334,23 +394,15 @@ class RAGASEvaluator:
         for name in self._metrics:
             if name == "context_precision":
                 if ground_truths is None:
-                    logger.warning(
-                        "Skipping context_precision: ground_truths not provided"
-                    )
+                    logger.warning("Skipping context_precision: ground_truths not provided")
                     continue
-                results[name] = compute_context_precision(
-                    questions, contexts, ground_truths
-                )
+                results[name] = compute_context_precision(questions, contexts, ground_truths)
 
             elif name == "context_recall":
                 if ground_truths is None:
-                    logger.warning(
-                        "Skipping context_recall: ground_truths not provided"
-                    )
+                    logger.warning("Skipping context_recall: ground_truths not provided")
                     continue
-                results[name] = compute_context_recall(
-                    questions, contexts, ground_truths
-                )
+                results[name] = compute_context_recall(questions, contexts, ground_truths)
 
             elif name == "answer_faithfulness":
                 results[name] = compute_answer_faithfulness(answers, contexts)

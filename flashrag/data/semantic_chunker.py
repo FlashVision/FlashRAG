@@ -90,8 +90,9 @@ class SemanticChunker:
             return []
 
         if len(sentences) == 1:
-            return [Chunk(text=sentences[0], metadata={**metadata, "chunk_index": 0},
-                          chunk_index=0)]
+            return [
+                Chunk(text=sentences[0], metadata={**metadata, "chunk_index": 0}, chunk_index=0)
+            ]
 
         similarities = self._compute_similarities(sentences)
         breakpoints = self._find_breakpoints(similarities)
@@ -131,10 +132,9 @@ class SemanticChunker:
         norms = np.where(norms == 0, 1.0, norms)
         normed = embeddings / norms
 
-        similarities = np.array([
-            float(np.dot(normed[i], normed[i + 1]))
-            for i in range(len(normed) - 1)
-        ])
+        similarities = np.array(
+            [float(np.dot(normed[i], normed[i + 1])) for i in range(len(normed) - 1)]
+        )
         return similarities
 
     def _find_breakpoints(self, similarities: np.ndarray) -> list[int]:
@@ -156,20 +156,14 @@ class SemanticChunker:
             return []
 
         if self.breakpoint_percentile is not None:
-            threshold = float(
-                np.percentile(similarities, 100 - self.breakpoint_percentile)
-            )
+            threshold = float(np.percentile(similarities, 100 - self.breakpoint_percentile))
         else:
             threshold = self.similarity_threshold
 
-        breakpoints = [
-            i for i, sim in enumerate(similarities) if sim < threshold
-        ]
+        breakpoints = [i for i, sim in enumerate(similarities) if sim < threshold]
         return sorted(breakpoints)
 
-    def _merge_small_chunks(
-        self, chunks: list[str], min_size: int
-    ) -> list[str]:
+    def _merge_small_chunks(self, chunks: list[str], min_size: int) -> list[str]:
         """Merge consecutive chunks that are below *min_size* characters."""
         if not chunks:
             return chunks
@@ -187,9 +181,7 @@ class SemanticChunker:
 
         return merged
 
-    def _split_large_chunks(
-        self, chunks: list[str], max_size: int
-    ) -> list[str]:
+    def _split_large_chunks(self, chunks: list[str], max_size: int) -> list[str]:
         """Split chunks exceeding *max_size* at the nearest sentence boundary."""
         result: list[str] = []
         for chunk in chunks:
@@ -256,14 +248,12 @@ class SemanticChunker:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _group_by_breakpoints(
-        sentences: list[str], breakpoints: list[int]
-    ) -> list[str]:
+    def _group_by_breakpoints(sentences: list[str], breakpoints: list[int]) -> list[str]:
         """Group sentences into chunks separated by breakpoint indices."""
         chunks: list[str] = []
         prev = 0
         for bp in breakpoints:
-            chunk_text = " ".join(sentences[prev: bp + 1])
+            chunk_text = " ".join(sentences[prev : bp + 1])
             if chunk_text.strip():
                 chunks.append(chunk_text)
             prev = bp + 1

@@ -157,9 +157,33 @@ def compute_relevance(
     answer_tokens = tokenize(answer)
 
     stop_words = {
-        "a", "an", "the", "is", "it", "of", "in", "to", "and", "or",
-        "for", "on", "with", "as", "at", "by", "what", "how", "why",
-        "when", "where", "who", "which", "do", "does", "did", "?",
+        "a",
+        "an",
+        "the",
+        "is",
+        "it",
+        "of",
+        "in",
+        "to",
+        "and",
+        "or",
+        "for",
+        "on",
+        "with",
+        "as",
+        "at",
+        "by",
+        "what",
+        "how",
+        "why",
+        "when",
+        "where",
+        "who",
+        "which",
+        "do",
+        "does",
+        "did",
+        "?",
     }
     question_content = question_tokens - stop_words
     answer_content = answer_tokens - stop_words

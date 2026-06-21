@@ -90,11 +90,7 @@ _TEMPLATES: dict[str, PromptTemplate] = {
             "If the context does not contain enough information, say so honestly. "
             "Cite the source numbers [1], [2], etc. when using information from a specific context."
         ),
-        user=(
-            "Context:\n{context}\n\n"
-            "Question: {question}\n\n"
-            "Answer:"
-        ),
+        user=("Context:\n{context}\n\nQuestion: {question}\n\nAnswer:"),
     ),
     "conversational": PromptTemplate(
         name="conversational",
@@ -103,11 +99,7 @@ _TEMPLATES: dict[str, PromptTemplate] = {
             "material to answer the user's question in a natural, conversational tone. "
             "If the references don't cover the topic, let the user know."
         ),
-        user=(
-            "Here are some relevant references:\n\n{context}\n\n"
-            "User: {question}\n\n"
-            "Assistant:"
-        ),
+        user=("Here are some relevant references:\n\n{context}\n\nUser: {question}\n\nAssistant:"),
     ),
     "academic": PromptTemplate(
         name="academic",
@@ -116,11 +108,7 @@ _TEMPLATES: dict[str, PromptTemplate] = {
             "answers grounded in the provided sources. Use in-text citations [1], [2] "
             "for every claim. Distinguish between what the sources state and your analysis."
         ),
-        user=(
-            "Sources:\n{context}\n\n"
-            "Research Question: {question}\n\n"
-            "Analysis:"
-        ),
+        user=("Sources:\n{context}\n\nResearch Question: {question}\n\nAnalysis:"),
     ),
     "code": PromptTemplate(
         name="code",
@@ -129,19 +117,12 @@ _TEMPLATES: dict[str, PromptTemplate] = {
             "snippets to answer the question. Include code examples when relevant. "
             "Reference the source documents by number."
         ),
-        user=(
-            "Documentation:\n{context}\n\n"
-            "Question: {question}\n\n"
-            "Answer:"
-        ),
+        user=("Documentation:\n{context}\n\nQuestion: {question}\n\nAnswer:"),
     ),
     "minimal": PromptTemplate(
         name="minimal",
         system="",
-        user=(
-            "Given the following information:\n{context}\n\n"
-            "Answer this question: {question}"
-        ),
+        user=("Given the following information:\n{context}\n\nAnswer this question: {question}"),
     ),
 }
 

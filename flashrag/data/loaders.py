@@ -98,9 +98,7 @@ class PDFLoader:
         try:
             import pdfplumber
         except ImportError:
-            raise ImportError(
-                "pdfplumber is required. Install with: pip install 'flashrag[pdf]'"
-            )
+            raise ImportError("pdfplumber is required. Install with: pip install 'flashrag[pdf]'")
 
         docs: list[Document] = []
         with pdfplumber.open(str(path)) as pdf:
@@ -155,9 +153,7 @@ class HTMLLoader:
 class MarkdownLoader:
     """Load Markdown files with optional header-based section splitting."""
 
-    def load(
-        self, path: str | Path, split_on_headers: bool = False
-    ) -> list[Document]:
+    def load(self, path: str | Path, split_on_headers: bool = False) -> list[Document]:
         path = Path(path)
         text = path.read_text(encoding="utf-8", errors="replace")
 
@@ -165,9 +161,11 @@ class MarkdownLoader:
             return [Document(text=text, metadata={"source": str(path), "type": "markdown"})]
 
         sections = self._split_headers(text, str(path))
-        return sections if sections else [
-            Document(text=text, metadata={"source": str(path), "type": "markdown"})
-        ]
+        return (
+            sections
+            if sections
+            else [Document(text=text, metadata={"source": str(path), "type": "markdown"})]
+        )
 
     def _split_headers(self, text: str, source: str) -> list[Document]:
         header_re = re.compile(r"^(#{1,6})\s+(.+)$", re.MULTILINE)

@@ -42,8 +42,7 @@ class SentenceTransformerEmbedding(BaseEmbedding):
             from sentence_transformers import SentenceTransformer
         except ImportError:
             raise ImportError(
-                "sentence-transformers is required. "
-                "Install with: pip install sentence-transformers"
+                "sentence-transformers is required. Install with: pip install sentence-transformers"
             )
 
         self.model_name = model_name

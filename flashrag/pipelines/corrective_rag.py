@@ -157,14 +157,11 @@ class CorrectiveRAGPipeline:
                 all_relevant.append(r)
 
         while (
-            len(all_relevant) < self.min_relevant_docs
-            and corrections_made < self.max_corrections
+            len(all_relevant) < self.min_relevant_docs and corrections_made < self.max_corrections
         ):
             corrections_made += 1
             refined_query = self.refine_query(question, corrections_made)
-            logger.info(
-                f"Correction {corrections_made}: refined query = '{refined_query[:80]}'"
-            )
+            logger.info(f"Correction {corrections_made}: refined query = '{refined_query[:80]}'")
 
             refined_vec = self._embedder.encode([refined_query])[0]
             new_results = self._vector_store.search(refined_vec, top_k=k)

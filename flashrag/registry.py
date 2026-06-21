@@ -36,8 +36,7 @@ class _Registry:
     def get(self, name: str) -> type[Any]:
         if name not in self._store:
             raise KeyError(
-                f"'{name}' not found in {self.name} registry. "
-                f"Available: {list(self._store.keys())}"
+                f"'{name}' not found in {self.name} registry. Available: {list(self._store.keys())}"
             )
         return self._store[name]
 

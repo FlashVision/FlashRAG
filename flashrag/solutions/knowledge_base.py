@@ -105,8 +105,7 @@ class KnowledgeBase:
         """Ask a question against the knowledge base."""
         if not self._generator:
             raise RuntimeError(
-                "No generator model configured. "
-                "Initialize with generator_model= to enable QA."
+                "No generator model configured. Initialize with generator_model= to enable QA."
             )
 
         results = self.search(question, top_k=top_k)
