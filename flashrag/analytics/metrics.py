@@ -8,14 +8,13 @@ RAG-specific metrics: faithfulness and relevance scoring.
 from __future__ import annotations
 
 import math
-from typing import List, Optional, Set
 
 import numpy as np
 
 
 def compute_recall_at_k(
-    retrieved: List[List[str]],
-    relevant: List[List[str]],
+    retrieved: list[list[str]],
+    relevant: list[list[str]],
     k: int,
 ) -> float:
     """
@@ -48,8 +47,8 @@ def compute_recall_at_k(
 
 
 def compute_mrr(
-    retrieved: List[List[str]],
-    relevant: List[List[str]],
+    retrieved: list[list[str]],
+    relevant: list[list[str]],
 ) -> float:
     """
     Compute Mean Reciprocal Rank (MRR).
@@ -73,8 +72,8 @@ def compute_mrr(
 
 
 def compute_ndcg(
-    retrieved: List[List[str]],
-    relevant: List[List[str]],
+    retrieved: list[list[str]],
+    relevant: list[list[str]],
     k: int,
 ) -> float:
     """
@@ -103,8 +102,8 @@ def compute_ndcg(
 
 def compute_faithfulness(
     answer: str,
-    contexts: List[str],
-    tokenize_fn: Optional[callable] = None,
+    contexts: list[str],
+    tokenize_fn: callable | None = None,
 ) -> float:
     """
     Compute faithfulness score: how much of the answer is grounded in the contexts.
@@ -130,7 +129,7 @@ def compute_faithfulness(
     if not answer_tokens:
         return 0.0
 
-    context_tokens: Set[str] = set()
+    context_tokens: set[str] = set()
     for ctx in contexts:
         context_tokens |= tokenize(ctx)
 
@@ -141,7 +140,7 @@ def compute_faithfulness(
 def compute_relevance(
     answer: str,
     question: str,
-    tokenize_fn: Optional[callable] = None,
+    tokenize_fn: callable | None = None,
 ) -> float:
     """
     Compute answer relevance: how well the answer addresses the question.

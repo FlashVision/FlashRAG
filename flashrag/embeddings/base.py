@@ -5,7 +5,6 @@ Abstract base class for all embedding backends.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
 
 import numpy as np
 
@@ -26,7 +25,7 @@ class BaseEmbedding(ABC):
     @abstractmethod
     def encode(
         self,
-        texts: List[str],
+        texts: list[str],
         batch_size: int = 64,
         show_progress: bool = False,
         normalize: bool = True,

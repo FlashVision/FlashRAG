@@ -9,11 +9,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
-import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
@@ -27,13 +25,13 @@ logger = logging.getLogger(__name__)
 class _QADataset(Dataset):
     """Simple Q&A dataset for RAG training."""
 
-    def __init__(self, data: List[Dict[str, str]]) -> None:
+    def __init__(self, data: list[dict[str, str]]) -> None:
         self.data = data
 
     def __len__(self) -> int:
         return len(self.data)
 
-    def __getitem__(self, idx: int) -> Dict[str, str]:
+    def __getitem__(self, idx: int) -> dict[str, str]:
         return self.data[idx]
 
 
@@ -62,7 +60,7 @@ class RAGTrainer:
 
     def __init__(
         self,
-        config: Optional[RAGConfig] = None,
+        config: RAGConfig | None = None,
         output_dir: str = "workspace/train",
         learning_rate: float = 2e-5,
         epochs: int = 3,
@@ -85,9 +83,9 @@ class RAGTrainer:
     def train_embedding(
         self,
         model_name: str = "all-MiniLM-L6-v2",
-        train_pairs: Optional[List[Tuple[str, str]]] = None,
-        train_path: Optional[str] = None,
-    ) -> Dict[str, float]:
+        train_pairs: list[tuple[str, str]] | None = None,
+        train_path: str | None = None,
+    ) -> dict[str, float]:
         """
         Fine-tune a sentence-transformer embedding model on contrastive pairs.
 
@@ -135,9 +133,9 @@ class RAGTrainer:
     def train_generator(
         self,
         model_name: str = "gpt2",
-        train_data: Optional[List[Dict[str, str]]] = None,
-        train_path: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        train_data: list[dict[str, str]] | None = None,
+        train_path: str | None = None,
+    ) -> dict[str, Any]:
         """
         Fine-tune a generator model on RAG Q&A data.
 

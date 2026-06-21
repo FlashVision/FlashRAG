@@ -10,12 +10,11 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from flashrag.data.preprocessor import Preprocessor
-from flashrag.generation.citation import CitationExtractor, CitationReport
+from flashrag.generation.citation import CitationExtractor
 from flashrag.pipelines.agentic_rag import AgenticRAGPipeline
-from flashrag.pipelines.basic_rag import RAGResult
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +62,9 @@ class ResearchAssistant:
 
     def add_documents(
         self,
-        paths: Optional[List[str | Path]] = None,
-        texts: Optional[List[str]] = None,
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        paths: list[str | Path] | None = None,
+        texts: list[str] | None = None,
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         """Add research documents."""
         if paths:
@@ -87,7 +86,7 @@ class ResearchAssistant:
         question: str,
         extract_citations: bool = True,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Conduct research on a question.
 
@@ -99,7 +98,7 @@ class ResearchAssistant:
 
         result = self._pipeline.run(question, **kwargs)
 
-        response: Dict[str, Any] = {
+        response: dict[str, Any] = {
             "answer": result.answer,
             "sources": result.sources,
             "num_sources": len(result.sources),

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from flashrag.generation.prompt_templates import PromptTemplate, get_template
 from flashrag.registry import GENERATORS
@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 class GenerationResult:
     answer: str
     prompt: str
-    contexts: List[str] = field(default_factory=list)
-    sources: List[Dict[str, Any]] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    contexts: list[str] = field(default_factory=list)
+    sources: list[dict[str, Any]] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @GENERATORS.register("huggingface")
@@ -80,7 +80,7 @@ class RAGGenerator:
 
         logger.info(f"Loading generator model '{model_name}'...")
 
-        load_kwargs: Dict[str, Any] = {}
+        load_kwargs: dict[str, Any] = {}
         if load_in_4bit:
             try:
                 from transformers import BitsAndBytesConfig
@@ -112,10 +112,10 @@ class RAGGenerator:
     def generate(
         self,
         question: str,
-        contexts: Optional[List[str]] = None,
-        sources: Optional[List[str]] = None,
-        search_results: Optional[List[SearchResult]] = None,
-        template: Optional[PromptTemplate] = None,
+        contexts: list[str] | None = None,
+        sources: list[str] | None = None,
+        search_results: list[SearchResult] | None = None,
+        template: PromptTemplate | None = None,
         **gen_kwargs: Any,
     ) -> GenerationResult:
         """
@@ -127,7 +127,7 @@ class RAGGenerator:
 
         ctx_texts = contexts or []
         src_labels = sources or []
-        src_metadata: List[Dict[str, Any]] = []
+        src_metadata: list[dict[str, Any]] = []
 
         if search_results:
             ctx_texts = [r.text for r in search_results]

@@ -11,8 +11,7 @@ import logging
 import math
 import re
 from collections import Counter, defaultdict
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 import numpy as np
 
@@ -22,7 +21,7 @@ from flashrag.retrieval.vector_store import SearchResult
 logger = logging.getLogger(__name__)
 
 
-def _tokenize(text: str, stop_words: Optional[Set[str]] = None) -> List[str]:
+def _tokenize(text: str, stop_words: set[str] | None = None) -> list[str]:
     """Lowercase, split on non-alphanumerics, remove stop words."""
     tokens = re.findall(r"\w+", text.lower())
     if stop_words:
@@ -64,11 +63,11 @@ class BM25Retriever:
         self.b = b
         self.stop_words = _DEFAULT_STOP_WORDS if use_stop_words else None
 
-        self._documents: List[str] = []
-        self._metadata: List[Dict[str, Any]] = []
-        self._doc_tokens: List[List[str]] = []
-        self._doc_freqs: Dict[str, int] = defaultdict(int)
-        self._doc_lens: List[int] = []
+        self._documents: list[str] = []
+        self._metadata: list[dict[str, Any]] = []
+        self._doc_tokens: list[list[str]] = []
+        self._doc_freqs: dict[str, int] = defaultdict(int)
+        self._doc_lens: list[int] = []
         self._avg_dl: float = 0.0
         self._n_docs: int = 0
 
@@ -78,8 +77,8 @@ class BM25Retriever:
 
     def index(
         self,
-        documents: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        documents: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> None:
         """Build the BM25 index from a list of documents."""
         self._documents = list(documents)
@@ -94,7 +93,7 @@ class BM25Retriever:
             tokens = _tokenize(doc, self.stop_words)
             self._doc_tokens.append(tokens)
             self._doc_lens.append(len(tokens))
-            seen: Set[str] = set()
+            seen: set[str] = set()
             for token in tokens:
                 if token not in seen:
                     self._doc_freqs[token] += 1
@@ -104,7 +103,7 @@ class BM25Retriever:
         self._avg_dl = total_len / self._n_docs if self._n_docs > 0 else 1.0
         logger.info(f"BM25 index built: {self._n_docs} documents, avg_dl={self._avg_dl:.1f}")
 
-    def _bm25_score(self, query_tokens: List[str], doc_idx: int) -> float:
+    def _bm25_score(self, query_tokens: list[str], doc_idx: int) -> float:
         doc_tokens = self._doc_tokens[doc_idx]
         doc_len = self._doc_lens[doc_idx]
         tf_counter = Counter(doc_tokens)
@@ -122,7 +121,7 @@ class BM25Retriever:
             score += idf * tf_norm
         return score
 
-    def search(self, query: str, top_k: int = 5) -> List[SearchResult]:
+    def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
         """Search the corpus and return top-k results ranked by BM25 score."""
         if self._n_docs == 0:
             return []
@@ -137,7 +136,7 @@ class BM25Retriever:
         top_indices = np.argpartition(-scores, k)[:k]
         top_indices = top_indices[np.argsort(-scores[top_indices])]
 
-        results: List[SearchResult] = []
+        results: list[SearchResult] = []
         for idx in top_indices:
             if scores[idx] <= 0:
                 continue
@@ -153,8 +152,8 @@ class BM25Retriever:
 
     def add_documents(
         self,
-        documents: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        documents: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> None:
         """Incrementally add documents to an existing index."""
         new_meta = list(metadata) if metadata else [{}] * len(documents)

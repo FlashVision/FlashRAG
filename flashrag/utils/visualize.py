@@ -4,13 +4,13 @@ Visualization and display utilities.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from flashrag.retrieval.vector_store import SearchResult
 
 
 def format_search_results(
-    results: List[SearchResult],
+    results: list[SearchResult],
     max_text_len: int = 200,
     show_metadata: bool = True,
 ) -> str:
@@ -18,7 +18,7 @@ def format_search_results(
     if not results:
         return "No results found."
 
-    lines: List[str] = []
+    lines: list[str] = []
     for i, r in enumerate(results, start=1):
         text_preview = r.text[:max_text_len]
         if len(r.text) > max_text_len:
@@ -40,7 +40,7 @@ def format_search_results(
 
 
 def print_results(
-    results: List[SearchResult],
+    results: list[SearchResult],
     max_text_len: int = 200,
     show_metadata: bool = True,
 ) -> None:
@@ -50,7 +50,7 @@ def print_results(
 
 def format_rag_result(result: Any, show_contexts: bool = True) -> str:
     """Format a RAGResult for display."""
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("=" * 60)
     lines.append("ANSWER:")
     lines.append(result.answer)

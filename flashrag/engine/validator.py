@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 from flashrag.analytics.metrics import compute_mrr, compute_ndcg, compute_recall_at_k
 from flashrag.embeddings.base import BaseEmbedding
@@ -39,7 +38,7 @@ class RAGValidator:
         self,
         embedding_model: BaseEmbedding,
         vector_store: VectorStore,
-        ks: Optional[List[int]] = None,
+        ks: list[int] | None = None,
     ) -> None:
         self._embedder = embedding_model
         self._store = vector_store
@@ -47,10 +46,10 @@ class RAGValidator:
 
     def evaluate_retrieval(
         self,
-        queries: List[str],
-        relevant_docs: List[List[str]],
+        queries: list[str],
+        relevant_docs: list[list[str]],
         top_k: int = 10,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Evaluate retrieval quality.
 
@@ -63,7 +62,7 @@ class RAGValidator:
         top_k : int
             Maximum number of results to retrieve per query.
         """
-        all_retrieved: List[List[str]] = []
+        all_retrieved: list[list[str]] = []
 
         for query in queries:
             query_vec = self._embedder.encode([query])[0]
@@ -71,7 +70,7 @@ class RAGValidator:
             retrieved_texts = [r.text for r in results]
             all_retrieved.append(retrieved_texts)
 
-        metrics: Dict[str, float] = {}
+        metrics: dict[str, float] = {}
         for k in self.ks:
             if k <= top_k:
                 recall = compute_recall_at_k(all_retrieved, relevant_docs, k)
@@ -91,12 +90,12 @@ class RAGValidator:
         self,
         eval_path: str | Path,
         top_k: int = 10,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Evaluate from a JSONL file with ``{"query": ..., "relevant": [...]}`` entries.
         """
-        queries: List[str] = []
-        relevant: List[List[str]] = []
+        queries: list[str] = []
+        relevant: list[list[str]] = []
 
         with open(eval_path) as f:
             for line in f:

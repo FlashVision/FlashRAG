@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Optional
 
 from flashrag.data.chunkers import Chunk, FixedChunker, RecursiveChunker, SentenceChunker
 from flashrag.data.loaders import Document, DocumentLoader
@@ -62,9 +61,9 @@ class Preprocessor:
         else:
             self.chunker = chunker_cls(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
 
-    def process_files(self, paths: List[str | Path]) -> List[Chunk]:
+    def process_files(self, paths: list[str | Path]) -> list[Chunk]:
         """Load and chunk multiple files."""
-        all_chunks: List[Chunk] = []
+        all_chunks: list[Chunk] = []
         for path in paths:
             path = Path(path)
             if not path.exists():
@@ -79,18 +78,18 @@ class Preprocessor:
 
     def process_texts(
         self,
-        texts: List[str],
-        metadata: Optional[List[dict]] = None,
-    ) -> List[Chunk]:
+        texts: list[str],
+        metadata: list[dict] | None = None,
+    ) -> list[Chunk]:
         """Chunk raw text strings directly."""
         metadata = metadata or [{}] * len(texts)
-        all_chunks: List[Chunk] = []
+        all_chunks: list[Chunk] = []
         for text, meta in zip(texts, metadata):
             doc = Document(text=text, metadata=meta)
             all_chunks.extend(self._process_document(doc))
         return all_chunks
 
-    def _process_document(self, doc: Document) -> List[Chunk]:
+    def _process_document(self, doc: Document) -> list[Chunk]:
         cleaned = self._clean_text(doc.text)
         if len(cleaned) < self.min_chunk_length:
             return []

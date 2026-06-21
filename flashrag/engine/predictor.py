@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from tqdm import tqdm
 
@@ -33,12 +33,12 @@ class RAGPredictor:
 
     def predict(
         self,
-        questions: List[str],
+        questions: list[str],
         show_progress: bool = True,
         **kwargs: Any,
-    ) -> List[RAGResult]:
+    ) -> list[RAGResult]:
         """Run the pipeline on a list of questions."""
-        results: List[RAGResult] = []
+        results: list[RAGResult] = []
         iterator = tqdm(questions, desc="Predicting") if show_progress else questions
 
         for question in iterator:
@@ -51,14 +51,14 @@ class RAGPredictor:
     def predict_from_file(
         self,
         input_path: str | Path,
-        output_path: Optional[str | Path] = None,
+        output_path: str | Path | None = None,
         question_key: str = "question",
         **kwargs: Any,
-    ) -> List[RAGResult]:
+    ) -> list[RAGResult]:
         """
         Read questions from a JSONL file and write results.
         """
-        questions: List[str] = []
+        questions: list[str] = []
         with open(input_path) as f:
             for line in f:
                 item = json.loads(line)

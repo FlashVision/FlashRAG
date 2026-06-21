@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import List, Optional
 
 import numpy as np
 
@@ -43,7 +42,7 @@ class OpenAIEmbedding(BaseEmbedding):
     def __init__(
         self,
         model_name: str = "text-embedding-3-small",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         max_retries: int = 3,
     ) -> None:
         try:
@@ -70,12 +69,12 @@ class OpenAIEmbedding(BaseEmbedding):
 
     def encode(
         self,
-        texts: List[str],
+        texts: list[str],
         batch_size: int = 64,
         show_progress: bool = False,
         normalize: bool = True,
     ) -> np.ndarray:
-        all_embeddings: List[List[float]] = []
+        all_embeddings: list[list[float]] = []
 
         for i in range(0, len(texts), batch_size):
             batch = texts[i: i + batch_size]

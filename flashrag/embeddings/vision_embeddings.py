@@ -9,10 +9,13 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 import torch
+
+if TYPE_CHECKING:
+    from PIL import Image as _PILImage
 
 from flashrag.embeddings.base import BaseEmbedding
 from flashrag.registry import EMBEDDINGS
@@ -68,13 +71,13 @@ class VisionEmbedding(BaseEmbedding):
 
     def encode(
         self,
-        texts: List[str],
+        texts: list[str],
         batch_size: int = 32,
         show_progress: bool = False,
         normalize: bool = True,
     ) -> np.ndarray:
         """Encode text strings using the CLIP text encoder."""
-        all_vecs: List[np.ndarray] = []
+        all_vecs: list[np.ndarray] = []
         for i in range(0, len(texts), batch_size):
             batch = texts[i: i + batch_size]
             inputs = self._processor(
@@ -92,7 +95,7 @@ class VisionEmbedding(BaseEmbedding):
 
     def encode_images(
         self,
-        images: List[Union[str, Path, "PIL.Image.Image"]],
+        images: list[str | Path | _PILImage],
         batch_size: int = 16,
         normalize: bool = True,
     ) -> np.ndarray:
@@ -102,14 +105,14 @@ class VisionEmbedding(BaseEmbedding):
         except ImportError:
             raise ImportError("Pillow is required for image embedding: pip install Pillow")
 
-        loaded: List = []
+        loaded: list = []
         for img in images:
             if isinstance(img, (str, Path)):
                 loaded.append(PILImage.open(img).convert("RGB"))
             else:
                 loaded.append(img)
 
-        all_vecs: List[np.ndarray] = []
+        all_vecs: list[np.ndarray] = []
         for i in range(0, len(loaded), batch_size):
             batch = loaded[i: i + batch_size]
             inputs = self._processor(images=batch, return_tensors="pt")

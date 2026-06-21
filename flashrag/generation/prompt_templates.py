@@ -8,7 +8,6 @@ suitable for an LLM to generate a grounded answer.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 
 @dataclass
@@ -39,8 +38,8 @@ class PromptTemplate:
     def format(
         self,
         question: str,
-        contexts: List[str],
-        sources: Optional[List[str]] = None,
+        contexts: list[str],
+        sources: list[str] | None = None,
     ) -> str:
         """Render the full prompt with contexts and question."""
         numbered = []
@@ -61,9 +60,9 @@ class PromptTemplate:
     def format_messages(
         self,
         question: str,
-        contexts: List[str],
-        sources: Optional[List[str]] = None,
-    ) -> List[Dict[str, str]]:
+        contexts: list[str],
+        sources: list[str] | None = None,
+    ) -> list[dict[str, str]]:
         """Return chat-style messages list for chat-format models."""
         numbered = []
         for i, ctx in enumerate(contexts):
@@ -83,7 +82,7 @@ class PromptTemplate:
         return messages
 
 
-_TEMPLATES: Dict[str, PromptTemplate] = {
+_TEMPLATES: dict[str, PromptTemplate] = {
     "default": PromptTemplate(
         name="default",
         system=(
@@ -160,5 +159,5 @@ def register_template(template: PromptTemplate) -> None:
     _TEMPLATES[template.name] = template
 
 
-def list_templates() -> List[str]:
+def list_templates() -> list[str]:
     return list(_TEMPLATES.keys())

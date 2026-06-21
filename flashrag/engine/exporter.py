@@ -10,7 +10,7 @@ import json
 import logging
 import shutil
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from flashrag.cfg.config import RAGConfig
 from flashrag.retrieval.vector_store import VectorStore
@@ -37,10 +37,10 @@ class RAGExporter:
     def export(
         self,
         vector_store: VectorStore,
-        config: Optional[RAGConfig] = None,
-        model_path: Optional[str | Path] = None,
+        config: RAGConfig | None = None,
+        model_path: str | Path | None = None,
         include_model: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Export the RAG system.
 
@@ -56,7 +56,7 @@ class RAGExporter:
             Whether to copy model weights into the export.
         """
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        manifest: Dict[str, Any] = {"version": "1.0.0", "components": []}
+        manifest: dict[str, Any] = {"version": "1.0.0", "components": []}
 
         index_dir = self.output_dir / "index"
         vector_store.save(index_dir)

@@ -11,7 +11,7 @@ Reference: Yan et al., "Corrective Retrieval Augmented Generation" (2024)
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
@@ -80,8 +80,8 @@ class CorrectiveRAGPipeline:
 
     def index_documents(
         self,
-        texts: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        texts: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         meta = metadata or [{}] * len(texts)
         vectors = self._embedder.encode(texts, show_progress=True)
@@ -89,16 +89,16 @@ class CorrectiveRAGPipeline:
         return len(texts)
 
     def grade_documents(
-        self, query: str, results: List[SearchResult]
-    ) -> tuple[List[SearchResult], List[SearchResult]]:
+        self, query: str, results: list[SearchResult]
+    ) -> tuple[list[SearchResult], list[SearchResult]]:
         """
         Grade retrieved documents as relevant or irrelevant.
 
         Uses embedding similarity as a relevance proxy. Documents above
         the threshold are kept; those below are flagged for correction.
         """
-        relevant: List[SearchResult] = []
-        irrelevant: List[SearchResult] = []
+        relevant: list[SearchResult] = []
+        irrelevant: list[SearchResult] = []
 
         query_vec = self._embedder.encode([query])[0]
 
@@ -131,7 +131,7 @@ class CorrectiveRAGPipeline:
     def run(
         self,
         question: str,
-        top_k: Optional[int] = None,
+        top_k: int | None = None,
         **gen_kwargs: Any,
     ) -> RAGResult:
         """
@@ -143,7 +143,7 @@ class CorrectiveRAGPipeline:
         4. Generate answer from relevant documents
         """
         k = top_k or self.top_k
-        all_relevant: List[SearchResult] = []
+        all_relevant: list[SearchResult] = []
         seen_texts: set = set()
         corrections_made = 0
 

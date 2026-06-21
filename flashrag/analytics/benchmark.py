@@ -11,7 +11,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
@@ -43,7 +43,7 @@ class Benchmark:
 
     def __init__(
         self,
-        pipeline: Optional[BasicRAGPipeline] = None,
+        pipeline: BasicRAGPipeline | None = None,
         output_dir: str = "workspace/benchmark",
     ) -> None:
         self._pipeline = pipeline
@@ -55,11 +55,11 @@ class Benchmark:
 
     def run(
         self,
-        eval_data: Optional[List[Dict[str, Any]]] = None,
-        eval_path: Optional[str | Path] = None,
-        ks: Optional[List[int]] = None,
+        eval_data: list[dict[str, Any]] | None = None,
+        eval_path: str | Path | None = None,
+        ks: list[int] | None = None,
         save_results: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Run a full benchmark evaluation.
 
@@ -100,8 +100,8 @@ class Benchmark:
         logger.info(f"Running benchmark on {len(questions)} queries...")
         start_time = time.time()
 
-        results: List[RAGResult] = []
-        latencies: List[float] = []
+        results: list[RAGResult] = []
+        latencies: list[float] = []
 
         for question in questions:
             t0 = time.time()
@@ -111,7 +111,7 @@ class Benchmark:
 
         total_time = time.time() - start_time
 
-        metrics: Dict[str, Any] = {"num_queries": len(questions)}
+        metrics: dict[str, Any] = {"num_queries": len(questions)}
 
         retrieved_texts = [r.contexts for r in results]
         has_relevant = any(docs for docs in gt_relevant)

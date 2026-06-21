@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import yaml
 
@@ -22,14 +22,14 @@ class EmbeddingConfig:
     batch_size: int = 64
     device: str = "cpu"
     normalize: bool = True
-    cache_dir: Optional[str] = None
+    cache_dir: str | None = None
 
 
 @dataclass
 class RetrieverConfig:
     backend: str = "faiss"
     top_k: int = 5
-    index_path: Optional[str] = None
+    index_path: str | None = None
     use_bm25: bool = False
     use_hybrid: bool = False
     hybrid_alpha: float = 0.5
@@ -53,18 +53,18 @@ class GeneratorConfig:
 
 @dataclass
 class DataConfig:
-    docs_path: Optional[str] = None
+    docs_path: str | None = None
     chunk_size: int = 512
     chunk_overlap: int = 64
     chunk_strategy: str = "recursive"
-    supported_formats: List[str] = field(
+    supported_formats: list[str] = field(
         default_factory=lambda: ["pdf", "html", "md", "csv", "txt"]
     )
 
 
 @dataclass
 class AnalyticsConfig:
-    metrics: List[str] = field(
+    metrics: list[str] = field(
         default_factory=lambda: ["recall@5", "mrr", "ndcg@10"]
     )
     output_dir: str = "workspace/eval"
@@ -82,16 +82,16 @@ class RAGConfig:
     analytics: AnalyticsConfig = field(default_factory=AnalyticsConfig)
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "RAGConfig":
+    def from_yaml(cls, path: str | Path) -> RAGConfig:
         path = Path(path)
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {path}")
         with open(path) as f:
-            raw: Dict[str, Any] = yaml.safe_load(f) or {}
+            raw: dict[str, Any] = yaml.safe_load(f) or {}
         return cls._from_dict(raw)
 
     @classmethod
-    def _from_dict(cls, d: Dict[str, Any]) -> "RAGConfig":
+    def _from_dict(cls, d: dict[str, Any]) -> RAGConfig:
         cfg = cls()
         simple_fields = {"project_name", "seed", "output_dir"}
         for k in simple_fields:
@@ -112,7 +112,7 @@ class RAGConfig:
                         setattr(obj, k, v)
         return cfg
 
-    def merge_cli(self, overrides: Dict[str, Any]) -> None:
+    def merge_cli(self, overrides: dict[str, Any]) -> None:
         """Apply dot-separated CLI overrides like ``retriever.top_k=10``."""
         for key, value in overrides.items():
             parts = key.split(".")
@@ -121,7 +121,7 @@ class RAGConfig:
                 obj = getattr(obj, part)
             setattr(obj, parts[-1], value)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         import dataclasses
 
         def _asdict(obj: Any) -> Any:
@@ -132,7 +132,7 @@ class RAGConfig:
         return _asdict(self)
 
 
-def get_config(path: Optional[str | Path] = None) -> RAGConfig:
+def get_config(path: str | Path | None = None) -> RAGConfig:
     if path is not None:
         return RAGConfig.from_yaml(path)
     env_path = os.environ.get("FLASHRAG_CONFIG")

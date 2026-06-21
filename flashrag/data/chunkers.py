@@ -9,13 +9,13 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
 class Chunk:
     text: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     chunk_index: int = 0
 
     def __repr__(self) -> str:
@@ -37,13 +37,13 @@ class RecursiveChunker:
         self,
         chunk_size: int = 512,
         chunk_overlap: int = 64,
-        separators: Optional[List[str]] = None,
+        separators: list[str] | None = None,
     ) -> None:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.separators = separators or self.DEFAULT_SEPARATORS
 
-    def chunk(self, text: str, metadata: Optional[Dict[str, Any]] = None) -> List[Chunk]:
+    def chunk(self, text: str, metadata: dict[str, Any] | None = None) -> list[Chunk]:
         metadata = metadata or {}
         raw_chunks = self._split_recursive(text, self.separators)
         merged = self._merge_with_overlap(raw_chunks)
@@ -52,7 +52,7 @@ class RecursiveChunker:
             for i, t in enumerate(merged)
         ]
 
-    def _split_recursive(self, text: str, separators: List[str]) -> List[str]:
+    def _split_recursive(self, text: str, separators: list[str]) -> list[str]:
         if not text:
             return []
 
@@ -66,7 +66,7 @@ class RecursiveChunker:
             return [text[i: i + self.chunk_size] for i in range(0, len(text), self.chunk_size)]
 
         parts = text.split(sep)
-        result: List[str] = []
+        result: list[str] = []
         current = ""
 
         for part in parts:
@@ -87,11 +87,11 @@ class RecursiveChunker:
 
         return result
 
-    def _merge_with_overlap(self, chunks: List[str]) -> List[str]:
+    def _merge_with_overlap(self, chunks: list[str]) -> list[str]:
         if not chunks or self.chunk_overlap <= 0:
             return chunks
 
-        result: List[str] = [chunks[0]]
+        result: list[str] = [chunks[0]]
         for i in range(1, len(chunks)):
             prev = chunks[i - 1]
             overlap_text = prev[-self.chunk_overlap:] if len(prev) > self.chunk_overlap else prev
@@ -118,13 +118,13 @@ class SentenceChunker:
         self.chunk_size = chunk_size
         self.sentence_overlap = sentence_overlap
 
-    def chunk(self, text: str, metadata: Optional[Dict[str, Any]] = None) -> List[Chunk]:
+    def chunk(self, text: str, metadata: dict[str, Any] | None = None) -> list[Chunk]:
         metadata = metadata or {}
         sentences = self._SENTENCE_RE.split(text.strip())
         sentences = [s.strip() for s in sentences if s.strip()]
 
-        chunks: List[Chunk] = []
-        current_sentences: List[str] = []
+        chunks: list[Chunk] = []
+        current_sentences: list[str] = []
         current_len = 0
 
         for sent in sentences:
@@ -163,10 +163,10 @@ class FixedChunker:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
 
-    def chunk(self, text: str, metadata: Optional[Dict[str, Any]] = None) -> List[Chunk]:
+    def chunk(self, text: str, metadata: dict[str, Any] | None = None) -> list[Chunk]:
         metadata = metadata or {}
         step = max(self.chunk_size - self.chunk_overlap, 1)
-        chunks: List[Chunk] = []
+        chunks: list[Chunk] = []
         for i in range(0, len(text), step):
             segment = text[i: i + self.chunk_size]
             if segment.strip():

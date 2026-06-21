@@ -9,9 +9,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-
-import numpy as np
+from typing import Any
 
 from flashrag.generation.generator import RAGGenerator
 from flashrag.pipelines.basic_rag import RAGResult
@@ -55,14 +53,14 @@ class MultimodalRAGPipeline:
         self._generator = RAGGenerator(model_name=generator_model, device=device)
         self.top_k = top_k
 
-        self._documents: List[str] = []
-        self._modalities: List[str] = []
+        self._documents: list[str] = []
+        self._modalities: list[str] = []
         logger.info("MultimodalRAGPipeline initialized")
 
     def index_texts(
         self,
-        texts: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        texts: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         """Index text documents using CLIP text encoder."""
         meta = metadata or [{"modality": "text"}] * len(texts)
@@ -77,9 +75,9 @@ class MultimodalRAGPipeline:
 
     def index_images(
         self,
-        image_paths: List[str | Path],
-        captions: Optional[List[str]] = None,
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        image_paths: list[str | Path],
+        captions: list[str] | None = None,
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         """Index images using CLIP vision encoder."""
         vectors = self._embedder.encode_images(image_paths)
@@ -97,15 +95,15 @@ class MultimodalRAGPipeline:
         self._modalities.extend(["image"] * len(image_paths))
         return len(image_paths)
 
-    def search_by_text(self, query: str, top_k: Optional[int] = None) -> List[SearchResult]:
+    def search_by_text(self, query: str, top_k: int | None = None) -> list[SearchResult]:
         """Search the multimodal index with a text query."""
         k = top_k or self.top_k
         query_vec = self._embedder.encode([query])[0]
         return self._vector_store.search(query_vec, top_k=k)
 
     def search_by_image(
-        self, image_path: str | Path, top_k: Optional[int] = None
-    ) -> List[SearchResult]:
+        self, image_path: str | Path, top_k: int | None = None
+    ) -> list[SearchResult]:
         """Search the multimodal index with an image query."""
         k = top_k or self.top_k
         query_vec = self._embedder.encode_images([image_path])[0]
@@ -114,7 +112,7 @@ class MultimodalRAGPipeline:
     def run(
         self,
         question: str,
-        top_k: Optional[int] = None,
+        top_k: int | None = None,
         **gen_kwargs: Any,
     ) -> RAGResult:
         """Run text-query multimodal retrieval + generation."""

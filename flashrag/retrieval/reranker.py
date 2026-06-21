@@ -8,7 +8,6 @@ model that jointly processes the query and each candidate document.
 from __future__ import annotations
 
 import logging
-from typing import List, Optional
 
 import numpy as np
 import torch
@@ -59,9 +58,9 @@ class CrossEncoderReranker:
     def rerank(
         self,
         query: str,
-        results: List[SearchResult],
-        top_k: Optional[int] = None,
-    ) -> List[SearchResult]:
+        results: list[SearchResult],
+        top_k: int | None = None,
+    ) -> list[SearchResult]:
         """
         Re-score and re-sort retrieval results by cross-encoder relevance.
 
@@ -98,10 +97,10 @@ class CrossEncoderReranker:
 
         return reranked
 
-    def _score_pairs(self, pairs: List[tuple]) -> np.ndarray:
+    def _score_pairs(self, pairs: list[tuple]) -> np.ndarray:
         """Score a batch of (query, document) pairs."""
         batch_size = 32
-        all_scores: List[float] = []
+        all_scores: list[float] = []
 
         for i in range(0, len(pairs), batch_size):
             batch = pairs[i: i + batch_size]

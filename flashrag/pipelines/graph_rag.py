@@ -11,9 +11,8 @@ from __future__ import annotations
 import logging
 import re
 from collections import deque
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
@@ -476,12 +475,6 @@ class GraphRAGPipeline:
 
         generator = self._get_generator()
         context_block = "\n\n---\n\n".join(combined_passages)
-        prompt = (
-            f"Answer the question based on the following context:\n\n"
-            f"{context_block}\n\n"
-            f"Question: {question}\n"
-            f"Answer:"
-        )
 
         gen_result = generator.generate(
             question=question,

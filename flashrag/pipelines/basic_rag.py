@@ -11,19 +11,16 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import numpy as np
+from typing import Any
 
 from flashrag.data.chunkers import Chunk
 from flashrag.data.preprocessor import Preprocessor
 from flashrag.embeddings.base import BaseEmbedding
 from flashrag.generation.citation import CitationExtractor
-from flashrag.generation.generator import GenerationResult, RAGGenerator
-from flashrag.generation.prompt_templates import PromptTemplate, get_template
+from flashrag.generation.generator import RAGGenerator
 from flashrag.registry import PIPELINES
 from flashrag.retrieval.reranker import CrossEncoderReranker
-from flashrag.retrieval.vector_store import SearchResult, VectorStore
+from flashrag.retrieval.vector_store import VectorStore
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +28,11 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RAGResult:
     answer: str
-    contexts: List[str] = field(default_factory=list)
-    sources: List[Dict[str, Any]] = field(default_factory=list)
-    scores: List[float] = field(default_factory=list)
-    citations: Optional[Any] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    contexts: list[str] = field(default_factory=list)
+    sources: list[dict[str, Any]] = field(default_factory=list)
+    scores: list[float] = field(default_factory=list)
+    citations: Any | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @PIPELINES.register("basic_rag")
@@ -100,19 +97,19 @@ class BasicRAGPipeline:
 
         self.top_k = top_k
         self.use_reranker = use_reranker
-        self._reranker: Optional[CrossEncoderReranker] = None
+        self._reranker: CrossEncoderReranker | None = None
         if use_reranker:
             self._reranker = CrossEncoderReranker(model_name=reranker_model, device=device)
         self.reranker_top_k = reranker_top_k
 
-        self._chunks: List[Chunk] = []
+        self._chunks: list[Chunk] = []
         logger.info("BasicRAGPipeline initialized")
 
     def index_documents(
         self,
-        paths: Optional[List[str | Path]] = None,
-        texts: Optional[List[str]] = None,
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        paths: list[str | Path] | None = None,
+        texts: list[str] | None = None,
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         """Load, chunk, embed, and index documents."""
         if paths:
@@ -135,7 +132,7 @@ class BasicRAGPipeline:
     def run(
         self,
         question: str,
-        top_k: Optional[int] = None,
+        top_k: int | None = None,
         extract_citations: bool = True,
         **gen_kwargs: Any,
     ) -> RAGResult:

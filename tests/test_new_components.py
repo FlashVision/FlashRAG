@@ -4,7 +4,6 @@ semantic chunking, RAGAS evaluation, and GraphRAG.
 """
 
 import numpy as np
-import pytest
 
 
 class TestColBERTRetriever:

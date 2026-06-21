@@ -9,7 +9,7 @@ reference components by name; the registry resolves them at runtime.
 from __future__ import annotations
 
 import importlib
-from typing import Any, Dict, Type
+from typing import Any
 
 
 class _Registry:
@@ -17,12 +17,12 @@ class _Registry:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self._store: Dict[str, Type[Any]] = {}
+        self._store: dict[str, type[Any]] = {}
 
     def register(self, name: str | None = None):
         """Decorator that registers a class under *name* (defaults to cls.__name__)."""
 
-        def decorator(cls: Type[Any]) -> Type[Any]:
+        def decorator(cls: type[Any]) -> type[Any]:
             key = name or cls.__name__
             if key in self._store:
                 raise ValueError(
@@ -33,7 +33,7 @@ class _Registry:
 
         return decorator
 
-    def get(self, name: str) -> Type[Any]:
+    def get(self, name: str) -> type[Any]:
         if name not in self._store:
             raise KeyError(
                 f"'{name}' not found in {self.name} registry. "

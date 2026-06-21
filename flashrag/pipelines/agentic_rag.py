@@ -11,7 +11,7 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from flashrag.embeddings.base import BaseEmbedding
 from flashrag.generation.generator import RAGGenerator
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class AgentStep:
     action: str
     query: str
-    results: List[SearchResult] = field(default_factory=list)
+    results: list[SearchResult] = field(default_factory=list)
     reasoning: str = ""
 
 
@@ -79,15 +79,15 @@ class AgenticRAGPipeline:
 
     def index_documents(
         self,
-        texts: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        texts: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         meta = metadata or [{}] * len(texts)
         vectors = self._embedder.encode(texts, show_progress=True)
         self._vector_store.add(vectors, texts, meta)
         return len(texts)
 
-    def decompose_query(self, question: str) -> List[str]:
+    def decompose_query(self, question: str) -> list[str]:
         """
         Decompose a complex question into simpler sub-questions.
 
@@ -125,15 +125,15 @@ class AgenticRAGPipeline:
         return unique
 
     def assess_relevance(
-        self, query: str, results: List[SearchResult]
-    ) -> List[SearchResult]:
+        self, query: str, results: list[SearchResult]
+    ) -> list[SearchResult]:
         """Filter results below the relevance threshold."""
         return [r for r in results if r.score >= self.relevance_threshold]
 
     def run(
         self,
         question: str,
-        max_steps: Optional[int] = None,
+        max_steps: int | None = None,
         **gen_kwargs: Any,
     ) -> RAGResult:
         """
@@ -145,8 +145,8 @@ class AgenticRAGPipeline:
         4. Synthesize all gathered context into a final answer
         """
         steps_limit = max_steps or self.max_steps
-        all_results: List[SearchResult] = []
-        agent_steps: List[AgentStep] = []
+        all_results: list[SearchResult] = []
+        agent_steps: list[AgentStep] = []
         seen_texts: set = set()
 
         sub_queries = self.decompose_query(question)

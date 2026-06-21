@@ -9,10 +9,9 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -25,7 +24,7 @@ logger = logging.getLogger(__name__)
 class SearchResult:
     text: str
     score: float
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     vector_id: int = -1
 
 
@@ -74,8 +73,8 @@ class VectorStore:
             except Exception:
                 logger.warning("GPU FAISS unavailable, falling back to CPU")
 
-        self._documents: List[str] = []
-        self._metadata: List[Dict[str, Any]] = []
+        self._documents: list[str] = []
+        self._metadata: list[dict[str, Any]] = []
         logger.info(f"VectorStore initialized (dim={dimension}, metric={metric})")
 
     @property
@@ -85,8 +84,8 @@ class VectorStore:
     def add(
         self,
         vectors: np.ndarray,
-        documents: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        documents: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> None:
         """Add vectors and their associated documents to the store."""
         vectors = np.asarray(vectors, dtype=np.float32)
@@ -116,7 +115,7 @@ class VectorStore:
         self,
         query_vector: np.ndarray,
         top_k: int = 5,
-    ) -> List[SearchResult]:
+    ) -> list[SearchResult]:
         """Search for the ``top_k`` most similar vectors."""
         if self.size == 0:
             return []
@@ -132,7 +131,7 @@ class VectorStore:
         k = min(top_k, self.size)
         distances, indices = self._index.search(query_vector, k)
 
-        results: List[SearchResult] = []
+        results: list[SearchResult] = []
         for score, idx in zip(distances[0], indices[0]):
             if idx < 0:
                 continue
@@ -150,7 +149,7 @@ class VectorStore:
         self,
         query_vectors: np.ndarray,
         top_k: int = 5,
-    ) -> List[List[SearchResult]]:
+    ) -> list[list[SearchResult]]:
         """Search for multiple queries at once."""
         query_vectors = np.asarray(query_vectors, dtype=np.float32)
         if self.metric == "cosine":
@@ -160,7 +159,7 @@ class VectorStore:
         k = min(top_k, self.size)
         distances, indices = self._index.search(query_vectors, k)
 
-        all_results: List[List[SearchResult]] = []
+        all_results: list[list[SearchResult]] = []
         for dists, idxs in zip(distances, indices):
             results = []
             for score, idx in zip(dists, idxs):
@@ -177,7 +176,7 @@ class VectorStore:
             all_results.append(results)
         return all_results
 
-    def remove(self, vector_ids: List[int]) -> None:
+    def remove(self, vector_ids: list[int]) -> None:
         """Remove vectors by their IDs (rebuilds the index)."""
         keep_mask = np.ones(self.size, dtype=bool)
         for vid in vector_ids:
@@ -229,7 +228,7 @@ class VectorStore:
         logger.info(f"VectorStore saved to {path} ({self.size} vectors)")
 
     @classmethod
-    def load(cls, path: str | Path, use_gpu: bool = False) -> "VectorStore":
+    def load(cls, path: str | Path, use_gpu: bool = False) -> VectorStore:
         """Load a previously saved vector store."""
         import faiss
 

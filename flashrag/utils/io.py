@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
 
 
 def save_json(data: Any, path: str | Path, indent: int = 2) -> None:
@@ -23,7 +23,7 @@ def load_json(path: str | Path) -> Any:
         return json.load(f)
 
 
-def save_jsonl(data: List[Dict[str, Any]], path: str | Path) -> None:
+def save_jsonl(data: list[dict[str, Any]], path: str | Path) -> None:
     """Save a list of dicts to a JSONL file (one JSON object per line)."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -32,9 +32,9 @@ def save_jsonl(data: List[Dict[str, Any]], path: str | Path) -> None:
             f.write(json.dumps(item, ensure_ascii=False, default=str) + "\n")
 
 
-def load_jsonl(path: str | Path) -> List[Dict[str, Any]]:
+def load_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """Load a JSONL file into a list of dicts."""
-    data: List[Dict[str, Any]] = []
+    data: list[dict[str, Any]] = []
     with open(path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()

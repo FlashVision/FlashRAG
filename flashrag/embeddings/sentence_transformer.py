@@ -8,7 +8,6 @@ models like ``all-MiniLM-L6-v2``, ``bge-large-en-v1.5``, etc.
 from __future__ import annotations
 
 import logging
-from typing import List, Optional
 
 import numpy as np
 
@@ -37,7 +36,7 @@ class SentenceTransformerEmbedding(BaseEmbedding):
         self,
         model_name: str = "all-MiniLM-L6-v2",
         device: str = "cpu",
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
     ) -> None:
         try:
             from sentence_transformers import SentenceTransformer
@@ -61,7 +60,7 @@ class SentenceTransformerEmbedding(BaseEmbedding):
 
     def encode(
         self,
-        texts: List[str],
+        texts: list[str],
         batch_size: int = 64,
         show_progress: bool = False,
         normalize: bool = True,

@@ -10,10 +10,9 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from flashrag.data.preprocessor import Preprocessor
-from flashrag.embeddings.base import BaseEmbedding
 from flashrag.generation.generator import RAGGenerator
 from flashrag.retrieval.hybrid import HybridSearch
 from flashrag.retrieval.vector_store import SearchResult
@@ -43,15 +42,15 @@ class KnowledgeBase:
     def __init__(
         self,
         embedding_model: str = "all-MiniLM-L6-v2",
-        generator_model: Optional[str] = None,
+        generator_model: str | None = None,
         hybrid_alpha: float = 0.5,
-        persist_dir: Optional[str | Path] = None,
+        persist_dir: str | Path | None = None,
     ) -> None:
         self._hybrid = HybridSearch(
             embedding_model=embedding_model,
             alpha=hybrid_alpha,
         )
-        self._generator: Optional[RAGGenerator] = None
+        self._generator: RAGGenerator | None = None
         if generator_model:
             self._generator = RAGGenerator(model_name=generator_model)
 
@@ -66,9 +65,9 @@ class KnowledgeBase:
 
     def add_documents(
         self,
-        paths: Optional[List[str | Path]] = None,
-        texts: Optional[List[str]] = None,
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        paths: list[str | Path] | None = None,
+        texts: list[str] | None = None,
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         """Add documents to the knowledge base."""
         if paths:
@@ -98,7 +97,7 @@ class KnowledgeBase:
         self,
         query: str,
         top_k: int = 5,
-    ) -> List[SearchResult]:
+    ) -> list[SearchResult]:
         """Search the knowledge base."""
         return self._hybrid.search(query, top_k=top_k)
 

@@ -1,5 +1,5 @@
-from flashrag.data.loaders import DocumentLoader, PDFLoader, HTMLLoader, MarkdownLoader, CSVLoader
-from flashrag.data.chunkers import RecursiveChunker, SentenceChunker, FixedChunker
+from flashrag.data.chunkers import FixedChunker, RecursiveChunker, SentenceChunker
+from flashrag.data.loaders import CSVLoader, DocumentLoader, HTMLLoader, MarkdownLoader, PDFLoader
 from flashrag.data.preprocessor import Preprocessor
 from flashrag.data.semantic_chunker import SemanticChunker
 

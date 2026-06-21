@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from flashrag.data.preprocessor import Preprocessor
 from flashrag.pipelines.basic_rag import BasicRAGPipeline, RAGResult
@@ -74,7 +74,7 @@ class DocumentQA:
         self._indexed = False
         logger.info("DocumentQA initialized")
 
-    def add_documents(self, paths: List[str | Path]) -> int:
+    def add_documents(self, paths: list[str | Path]) -> int:
         """Load and index documents from file paths."""
         count = self._pipeline.index_documents(paths=paths)
         self._indexed = True
@@ -83,8 +83,8 @@ class DocumentQA:
 
     def add_texts(
         self,
-        texts: List[str],
-        metadata: Optional[List[Dict[str, Any]]] = None,
+        texts: list[str],
+        metadata: list[dict[str, Any]] | None = None,
     ) -> int:
         """Index raw text strings."""
         count = self._pipeline.index_documents(texts=texts, metadata=metadata)

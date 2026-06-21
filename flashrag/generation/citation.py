@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -17,15 +17,15 @@ class Citation:
     citation_id: int
     text_span: str
     source_text: str
-    source_metadata: Dict[str, Any] = field(default_factory=dict)
+    source_metadata: dict[str, Any] = field(default_factory=dict)
     confidence: float = 1.0
 
 
 @dataclass
 class CitationReport:
-    citations: List[Citation]
-    cited_sources: List[int]
-    uncited_sources: List[int]
+    citations: list[Citation]
+    cited_sources: list[int]
+    uncited_sources: list[int]
     attribution_score: float
     answer_with_highlights: str
 
@@ -43,8 +43,8 @@ class CitationExtractor:
     def extract(
         self,
         answer: str,
-        contexts: List[str],
-        sources: Optional[List[Dict[str, Any]]] = None,
+        contexts: list[str],
+        sources: list[dict[str, Any]] | None = None,
     ) -> CitationReport:
         """
         Extract citations from the answer and build a report.
@@ -59,7 +59,7 @@ class CitationExtractor:
             Metadata for each context passage.
         """
         sources = sources or [{}] * len(contexts)
-        citations: List[Citation] = []
+        citations: list[Citation] = []
         cited_ids: set = set()
 
         for match in self._CITE_PATTERN.finditer(answer):
@@ -120,9 +120,9 @@ class CitationExtractor:
     def validate_citations(
         self,
         answer: str,
-        contexts: List[str],
+        contexts: list[str],
         threshold: float = 0.3,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Validate that citations in the answer are actually supported by the sources.
 
