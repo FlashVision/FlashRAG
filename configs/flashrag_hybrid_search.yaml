@@ -1,0 +1,45 @@
+project_name: flashrag_hybrid
+seed: 42
+output_dir: workspace/hybrid
+
+embedding:
+  model_name: all-MiniLM-L6-v2
+  backend: sentence_transformer
+  dimension: 384
+  batch_size: 64
+  device: cpu
+  normalize: true
+
+retriever:
+  backend: hybrid
+  top_k: 5
+  use_bm25: true
+  use_hybrid: true
+  hybrid_alpha: 0.5
+  use_reranker: true
+  reranker_model: cross-encoder/ms-marco-MiniLM-L-6-v2
+  reranker_top_k: 3
+
+generator:
+  model_name: gpt2
+  backend: huggingface
+  max_new_tokens: 256
+  temperature: 0.7
+  device: cpu
+  prompt_template: default
+
+data:
+  chunk_size: 512
+  chunk_overlap: 64
+  chunk_strategy: recursive
+
+analytics:
+  metrics:
+    - recall@1
+    - recall@3
+    - recall@5
+    - recall@10
+    - mrr
+    - ndcg@5
+    - ndcg@10
+  output_dir: workspace/hybrid/eval

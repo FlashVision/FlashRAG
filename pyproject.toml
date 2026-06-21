@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flashrag"
+version = "1.0.0"
+description = "Production-grade Retrieval-Augmented Generation — vector databases, document retrieval, embedding models, knowledge-grounded QA."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Gaurav14cs17", email = "gaurav14cs17@gmail.com"},
+]
+keywords = ["rag", "retrieval-augmented-generation", "vector-database", "embeddings", "document-retrieval", "knowledge-qa", "llm"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.36.0",
+    "numpy>=1.24.0",
+    "PyYAML>=6.0",
+    "tqdm>=4.65.0",
+    "faiss-cpu>=1.7.4",
+    "sentence-transformers>=2.2.0",
+]
+
+[project.optional-dependencies]
+openai = ["openai>=1.10.0"]
+pdf = ["PyPDF2>=3.0.0", "pdfplumber>=0.10.0"]
+vision = ["Pillow>=10.0.0", "open-clip-torch>=2.24.0"]
+all = [
+    "openai>=1.10.0",
+    "PyPDF2>=3.0.0",
+    "pdfplumber>=0.10.0",
+    "Pillow>=10.0.0",
+    "open-clip-torch>=2.24.0",
+]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Gaurav14cs17/FlashVision"
+Documentation = "https://github.com/Gaurav14cs17/FlashVision/tree/main/FlashRAG/docs"
+Repository = "https://github.com/Gaurav14cs17/FlashVision"
+Issues = "https://github.com/Gaurav14cs17/FlashVision/issues"
+
+[project.scripts]
+flashrag = "flashrag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flashrag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short --cov=flashrag --cov-report=term-missing"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

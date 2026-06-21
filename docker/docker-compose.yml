@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  flashrag:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../workspace:/app/workspace
+      - ../data:/app/data
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: ["check"]
+
+  flashrag-index:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../workspace:/app/workspace
+      - ../data:/app/data
+    command:
+      - index
+      - --docs=/app/data/docs
+      - --embedding=all-MiniLM-L6-v2
+      - --output=/app/workspace/index
+    profiles:
+      - index
