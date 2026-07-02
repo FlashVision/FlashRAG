@@ -176,8 +176,11 @@ class BM25Retriever:
         )
 
         k = min(top_k, self._n_docs)
-        top_indices = np.argpartition(-scores, k)[:k]
-        top_indices = top_indices[np.argsort(-scores[top_indices])]
+        if k >= self._n_docs:
+            top_indices = np.argsort(-scores)
+        else:
+            top_indices = np.argpartition(-scores, k)[:k]
+            top_indices = top_indices[np.argsort(-scores[top_indices])]
 
         results: list[SearchResult] = []
         for idx in top_indices:

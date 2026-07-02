@@ -526,6 +526,10 @@ class TestSentenceTransformerEmbedding:
 
 
 class TestOpenAIEmbedding:
+    @pytest.fixture(autouse=True)
+    def _skip_without_openai(self):
+        pytest.importorskip("openai")
+
     @patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"})
     @patch("openai.OpenAI")
     def test_encode(self, mock_openai_cls):
